@@ -38,9 +38,9 @@ public class HierarquiaMemoria {
                 }
                 
                 long fim = System.nanoTime();
-                tempoTotalLinha += (fim - inicio) / 1_000_000;
+                tempoTotalLinha += (fim - inicio);
             }
-            double mediaLinha = (double) tempoTotalLinha / medicoes;
+            double mediaLinha = (double) tempoTotalLinha / (double) medicoes/ 1_000_000;
 
             // TESTE 2: Percurso Coluna a Coluna (Má localidade)
             long tempoTotalColuna = 0;
@@ -55,9 +55,9 @@ public class HierarquiaMemoria {
                 }
                 
                 long fim = System.nanoTime();
-                tempoTotalColuna += (fim - inicio) / 1_000_000;
+                tempoTotalColuna += (fim - inicio) ;
             }
-            double mediaColuna = (double) tempoTotalColuna / medicoes;
+            double mediaColuna = (double) tempoTotalColuna / (double) medicoes/ 1_000_000;
 
             // Exibindo a linha da tabela de resultados
             System.out.println(String.format("%-10s | %-20.2f | %-20.2f", (tamanho + "x" + tamanho), mediaLinha, mediaColuna));
