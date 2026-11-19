@@ -54,33 +54,42 @@ public class BufferCompartilhado {
         }
     }
 
-    public void consumir(String nomeConsumidor) throws InterruptedException {
+    public int consumir(String nomeConsumidor) throws InterruptedException {
         if (modoCorrigido) {
-        	
-            // Estratégia corrigida: aguarda item disponível e protege a região crítica
             itensDisponiveis.acquire();
             mutex.acquire();
             try {
                 int item = buffer[cabeca];
                 cabeca = (cabeca + 1) % capacidade;
                 contadorItens--;
-                System.out.println(nomeConsumidor + " consumiu o item " + item + " | Total no buffer: " + contadorItens);
+                System.out.println(nomeConsumidor + " consumiu o item " + item
+                        + " | Total no buffer: " + contadorItens);
+                return item;
             } finally {
                 mutex.release();
                 vagasDisponiveis.release();
             }
         } else {
-        	
-            // Cenário com falha: Leitura sem proteção
+            // Cenário com falha: leitura e atualização sem proteção
             Thread.sleep(15);
             int item = buffer[cabeca];
             cabeca = (cabeca + 1) % capacidade;
             contadorItens--;
-            System.out.println(nomeConsumidor + " consumiu o item " + item + " | Contador (com falha): " + contadorItens);
+            System.out.println(nomeConsumidor + " consumiu o item " + item
+                    + " | Contador (com falha): " + contadorItens);
+            return item;
         }
     }
 
-    public int getContadorItens() {
+    public int getContadorItens() throws InterruptedException {
+        if (modoCorrigido) {
+            mutex.acquire();
+            try {
+                return contadorItens;
+            } finally {
+                mutex.release();
+            }
+        }
         return contadorItens;
     }
 }
